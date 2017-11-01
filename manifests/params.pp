@@ -23,14 +23,16 @@ class datadog_agent::params {
   $dogapi_version = 'installed'
   $conf_dir_purge = false
 
-  case $::operatingsystem {
-    'Ubuntu','Debian' : {
-      $rubydev_package   =  'ruby-dev'
+  case $::osfamily {
+    default: {
+      fail("Class[datadog_agent]: Unsupported osfamily: ${::osfamily}")
     }
-    'RedHat','CentOS','Fedora','Amazon','Scientific' : {
-      $rubydev_package   = 'ruby-devel'
+    'Debian': {
+      $rubydev_package =  'ruby-dev'
     }
-    default: { fail("Class[datadog_agent]: Unsupported operatingsystem: ${::operatingsystem}") }
+    'RedHat': {
+      $rubydev_package = 'ruby-devel'
+    }
   }
 
 }

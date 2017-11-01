@@ -351,14 +351,18 @@ class datadog_agent(
     default:    { $_loglevel = 'INFO' }
   }
 
-  case $::operatingsystem {
-    'Ubuntu','Debian' : { include datadog_agent::ubuntu }
-    'RedHat','CentOS','Fedora','Amazon','Scientific' : {
+  case $::osfamily {
+    default: {
+      fail("Class[datadog_agent]: Unsupported osfamily: ${::osfamily}")
+    }
+    'Debian': {
+      include datadog_agent::ubuntu
+    }
+    'RedHat': {
       class { 'datadog_agent::redhat':
         manage_repo => $manage_repo,
       }
     }
-    default: { fail("Class[datadog_agent]: Unsupported operatingsystem: ${::operatingsystem}") }
   }
 
   file { '/etc/dd-agent':
